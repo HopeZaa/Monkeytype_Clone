@@ -673,7 +673,7 @@ if (nextTestBtn) nextTestBtn.addEventListener("click", restart);
 
 logoEl.addEventListener("click", (e) => {
   e.preventDefault();
-  location.reload();
+  restart();
 });
 
 // ========== KEYBOARD ==========
