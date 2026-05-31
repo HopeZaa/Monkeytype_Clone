@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monkeytype | A minimalistic, customizable typing test</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend+Deca&family=Roboto+Mono&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="https://lh3.googleusercontent.com/4bftzGNRvq8fywfWMvwuClCP4V7HQ2r2QenAphgXdoMzacwznJO88iKDJi2qLYU--QFo-PtligUb8WpN-XAiBOewNQ=s120" type="image/png">
+</head>
+<body>
+  <div id="app">
+    <header class="content-grid">
+      <a id="logo" href="#">
+        <div class="icon">
+          <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/monkeytype.png" alt="monkeytype" />
+        </div>
+        <div class="text">
+          <span class="top">monkey see</span>
+          <span class="bottom">monkeytype</span>
+        </div>
+      </a>
+
+      <nav id="menu">
+        <div class="navLeft">
+          <button aria-label="keyboard" data-balloon-pos="down">
+            <i class="fas fa-keyboard"></i>
+          </button>
+          <button aria-label="leaderboards" data-balloon-pos="down">
+            <i class="fas fa-crown"></i>
+          </button>
+          <button aria-label="about" data-balloon-pos="down">
+            <i class="fas fa-info"></i>
+          </button>
+          <button aria-label="settings" data-balloon-pos="down">
+            <i class="fas fa-cog"></i>
+          </button>
+        </div>
+        <div class="navRight">
+          <button aria-label="notifications" data-balloon-pos="down">
+            <i class="far fa-bell"></i>
+          </button>
+          <button aria-label="login" data-balloon-pos="down">
+            <i class="fas fa-user"></i>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="content-grid">
+      <div class="pageTest">
+        <div class="testConfig" id="testConfig">
+          <div class="group" id="punctuationMode">
+            <button class="textButton" data-mode="punctuation"><i class="fas fa-at"></i>punctuation</button>
+            <button class="textButton" data-mode="numbers"><i class="fas fa-hashtag"></i>numbers</button>
+          </div>
+          <div class="separator"></div>
+          <div class="group" id="testMode">
+            <button class="textButton active" data-test="time"><i class="fas fa-clock"></i>time</button>
+            <button class="textButton" data-test="words"><i class="fas fa-font"></i>words</button>
+            <button class="textButton" data-test="quote"><i class="fas fa-quote-right"></i>quote</button>
+            <button class="textButton" data-test="zen"><i class="fas fa-spell-check"></i>zen</button>
+            <button class="textButton" data-test="custom"><i class="fas fa-tools"></i>custom</button>
+          </div>
+          <div class="separator"></div>
+          <div class="group" id="testAmount">
+            <button class="textButton" data-amount="15">15</button>
+            <button class="textButton active" data-amount="30">30</button>
+            <button class="textButton" data-amount="60">60</button>
+            <button class="textButton" data-amount="120">120</button>
+            <button class="textButton" data-amount="custom"><i class="fas fa-wrench"></i></button>
+          </div>
+        </div>
+
+        <div id="typingTest">
+          <div id="capsWarning" class="hidden">
+            <i class="fas fa-lock"></i>Caps Lock
+          </div>
+
+          <div id="liveStatsMini" class="hidden">
+            <div class="time"></div>
+            <div class="speed"></div>
+            <div class="acc"></div>
+          </div>
+
+          <div id="languageIndicator">
+            <i class="fas fa-globe-americas"></i>
+            <span>english</span>
+          </div>
+
+          <div id="wordsWrapper">
+            <div id="words"></div>
+            <div id="caret" class="default"></div>
+          </div>
+
+          <input id="wordsInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" />
+
+          <button id="restartTestButton" aria-label="restart test" data-balloon-pos="down">
+            <i class="fas fa-redo-alt"></i>
+          </button>
+
+          <div id="testModesNotice">
+            <span class="key"><kbd>tab</kbd> <span>+</span> <kbd>enter</kbd> - restart test</span>
+            <span class="key"><kbd>esc</kbd> <span>or</span> <kbd>cmd + shift + p</kbd> - command line</span>
+          </div>
+        </div>
+
+        <div id="result" class="hidden">
+          <div class="wrapper">
+            <div class="stats">
+              <div class="group wpm">
+                <div class="top">wpm</div>
+                <div class="bottom" id="resultWpm">0</div>
+              </div>
+              <div class="group acc">
+                <div class="top">acc</div>
+                <div class="bottom" id="resultAcc">0%</div>
+              </div>
+            </div>
+            <div class="chart">
+              <canvas id="resultChart"></canvas>
+            </div>
+            <div class="stats morestats">
+              <div class="group">
+                <div class="top">test type</div>
+                <div class="bottom" id="resultTestType">time 30<br>english</div>
+              </div>
+              <div class="group">
+                <div class="top">raw</div>
+                <div class="bottom" id="resultRaw">0</div>
+              </div>
+              <div class="group">
+                <div class="top">characters</div>
+                <div class="bottom" id="resultChars" aria-label="correct / incorrect / extra / missed" data-balloon-pos="up">0/0/0/0</div>
+              </div>
+              <div class="group">
+                <div class="top">consistency</div>
+                <div class="bottom" id="resultConsistency">0%</div>
+              </div>
+              <div class="group time">
+                <div class="top">time</div>
+                <div class="bottom" id="resultTime">0s</div>
+              </div>
+            </div>
+            <div class="buttons">
+              <button id="nextTestButton" aria-label="next test" data-balloon-pos="down"><i class="fas fa-redo-alt"></i></button>
+              <button id="practiseWordsButton" aria-label="practice words" data-balloon-pos="down"><i class="fas fa-exclamation-triangle"></i></button>
+              <button id="showWordsHistoryButton" aria-label="toggle words history" data-balloon-pos="down"><i class="fas fa-align-left"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="content-grid" id="footer">
+      <div class="leftright">
+        <div class="left">
+          <button class="textButton" aria-label="contact" data-balloon-pos="up"><i class="fas fa-envelope"></i><span>contact</span></button>
+          <button class="textButton" aria-label="support" data-balloon-pos="up"><i class="fas fa-mug-hot"></i><span>support</span></button>
+          <button class="textButton" aria-label="github" data-balloon-pos="up"><i class="fab fa-github"></i><span>github</span></button>
+          <button class="textButton" aria-label="discord" data-balloon-pos="up"><i class="fab fa-discord"></i><span>discord</span></button>
+          <button class="textButton" aria-label="twitter" data-balloon-pos="up"><i class="fab fa-twitter"></i><span>twitter</span></button>
+          <button class="textButton" aria-label="terms" data-balloon-pos="up"><i class="fas fa-file-alt"></i><span>terms</span></button>
+          <button class="textButton" aria-label="security" data-balloon-pos="up"><i class="fas fa-shield-alt"></i><span>security</span></button>
+          <button class="textButton" aria-label="privacy" data-balloon-pos="up"><i class="fas fa-lock"></i><span>privacy</span></button>
+        </div>
+        <div class="right">
+          <button class="textButton currentTheme" aria-label="current theme" data-balloon-pos="up">
+            <i class="fas fa-palette"></i>
+            <span>serika dark</span>
+          </button>
+          <button class="textButton" aria-label="version" data-balloon-pos="up">
+            <i class="fas fa-code-branch"></i>
+            <span>v26.21.0</span>
+          </button>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
