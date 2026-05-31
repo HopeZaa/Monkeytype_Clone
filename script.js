@@ -60,6 +60,8 @@ const typingTestEl = document.getElementById("typingTest");
 const testConfigEl = document.getElementById("testConfig");
 const restartBtn = document.getElementById("restartTestButton");
 const nextTestBtn = document.getElementById("nextTestButton");
+const wordsWrapperEl = document.getElementById("wordsWrapper");
+const logoEl = document.getElementById("logo");
 
 // ========== TEST GENERATION ==========
 function randomWord() {
@@ -567,41 +569,57 @@ function drawChart() {
 }
 
 // ========== RESTART ==========
-function restart() {
+function restart(animate = true) {
   if (state.timer) clearInterval(state.timer);
-  Object.assign(state, {
-    words: [],
-    currentWordIndex: 0,
-    currentLetterIndex: 0,
-    startTime: null,
-    endTime: null,
-    timer: null,
-    timeLeft: state.mode === "time" ? state.amount : 0,
-    active: false,
-    finished: false,
-    errors: 0,
-    correctChars: 0,
-    incorrectChars: 0,
-    extraChars: 0,
-    missedChars: 0,
-    totalKeystrokes: 0,
-    wpmHistory: [],
-    rawHistory: [],
-    errorHistory: [],
-  });
 
-  wordsEl.style.marginTop = "0px";
-  resultEl.classList.add("hidden");
-  typingTestEl.classList.remove("hidden");
-  testConfigEl.classList.remove("hidden");
-  testConfigEl.style.opacity = "1";
-  liveStatsEl.classList.add("hidden");
-  capsWarningEl.classList.add("hidden");
+  const performReset = () => {
+    Object.assign(state, {
+      words: [],
+      currentWordIndex: 0,
+      currentLetterIndex: 0,
+      startTime: null,
+      endTime: null,
+      timer: null,
+      timeLeft: state.mode === "time" ? state.amount : 0,
+      active: false,
+      finished: false,
+      errors: 0,
+      correctChars: 0,
+      incorrectChars: 0,
+      extraChars: 0,
+      missedChars: 0,
+      totalKeystrokes: 0,
+      wpmHistory: [],
+      rawHistory: [],
+      errorHistory: [],
+    });
 
-  const wordCount = state.mode === "time" ? 60 : state.amount;
-  state.words = generateWords(wordCount);
-  renderWords();
-  inputEl.focus();
+    wordsEl.style.marginTop = "0px";
+    resultEl.classList.add("hidden");
+    typingTestEl.classList.remove("hidden");
+    testConfigEl.classList.remove("hidden");
+    testConfigEl.style.opacity = "1";
+    liveStatsEl.classList.add("hidden");
+    capsWarningEl.classList.add("hidden");
+
+    const wordCount = state.mode === "time" ? 60 : state.amount;
+    state.words = generateWords(wordCount);
+    renderWords();
+    inputEl.focus();
+  };
+
+  if (!animate) {
+    performReset();
+    return;
+  }
+
+  wordsWrapperEl.classList.add("fading");
+  setTimeout(() => {
+    performReset();
+    requestAnimationFrame(() => {
+      wordsWrapperEl.classList.remove("fading");
+    });
+  }, 125);
 }
 
 // ========== CONFIG BUTTONS ==========
@@ -653,6 +671,11 @@ document.querySelectorAll('#punctuationMode .textButton').forEach((btn) => {
 restartBtn.addEventListener("click", restart);
 if (nextTestBtn) nextTestBtn.addEventListener("click", restart);
 
+logoEl.addEventListener("click", (e) => {
+  e.preventDefault();
+  location.reload();
+});
+
 // ========== KEYBOARD ==========
 document.addEventListener("keydown", handleKeydown);
 document.addEventListener("click", () => inputEl.focus());
@@ -663,5 +686,5 @@ window.addEventListener("resize", () => {
 });
 
 // ========== INIT ==========
-restart();
+restart(false);
 inputEl.focus();

@@ -322,6 +322,11 @@ button:active {
   max-height: calc(1.5rem * 1.25 * 3 + 1rem);
   --c-dot: var(--text-color);
   --c-dot--error: var(--error-color);
+  transition: opacity 0.125s ease;
+}
+
+#wordsWrapper.fading {
+  opacity: 0;
 }
 
 #words {
@@ -505,7 +510,7 @@ button:active {
 
 /* ========== RESULT ========== */
 #result {
-  padding-top: 1rem;
+  padding-top: 5rem;
 }
 
 #result.hidden {
